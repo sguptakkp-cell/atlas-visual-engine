@@ -1,30 +1,39 @@
 """
-Atlas Visual Engine
-===================
+Atlas Visual Engine — export.py
 
-export.py
-
-Global export settings used by the Atlas Visual Engine.
-
-These settings define how diagrams and animations are exported.
+Global export settings and filename helpers.
 """
 
-# ---------------------------------------------------------------------
-# Image Export
-# ---------------------------------------------------------------------
+import os
 
-DEFAULT_FORMAT = "png"
-
-DEFAULT_DPI = 300
+# ------------------------------------------------------------------
+# Legacy Export Settings
+# ------------------------------------------------------------------
 
 TRANSPARENT_BACKGROUND = False
-
 PADDING = 0.10
-
-# ---------------------------------------------------------------------
-# Figure Saving
-# ---------------------------------------------------------------------
-
 TIGHT_LAYOUT = True
 
-BBOX = "tight"
+# ------------------------------------------------------------------
+# FRS Export Settings
+# ------------------------------------------------------------------
+
+DEFAULT_DPI = 150
+DEFAULT_FORMAT = "png"
+BBOX_INCHES = "tight"
+FACECOLOR = "#F8FAFC"
+OUTPUT_DIR = "n3l_diagrams"
+
+# ------------------------------------------------------------------
+# Backwards-compat alias
+# ------------------------------------------------------------------
+
+BBOX = BBOX_INCHES
+
+
+def build_filename(question_id: str, variant: str, error_code: str = "") -> str:
+    """Return a standardized output filename stem (no extension)."""
+    parts = [question_id, variant]
+    if error_code:
+        parts.append(error_code)
+    return "_".join(parts)

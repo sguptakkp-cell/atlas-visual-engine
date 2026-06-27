@@ -1,8 +1,7 @@
 """
-Atlas Visual Engine
-===================
+Atlas Visual Engine — constants public API.
 
-Public API for the Atlas constants package.
+Exports every constant from all sub-modules.
 """
 
 from .colors import *
