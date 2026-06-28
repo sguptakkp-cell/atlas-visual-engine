@@ -25,7 +25,7 @@ def compute_incline(theta_deg,x0,y0,U,i_style=INCLINE_STYLE,b_style=BLOCK_STYLE)
     sv,nv=slope_vectors(theta_deg)
     P=A+sv*(i_style.block_pos_t*slope_len)
     bc=P+nv*(b_style.height_ratio*U/2.0)
-    arc_r=i_style.arc_radius_ratio*U
+    arc_r=i_style.arc_radius_ratio*(b_style.width_ratio*U)
     bis=Vector2(math.cos(math.radians(theta_deg/2)),math.sin(math.radians(theta_deg/2)))
     lp=A+bis*(arc_r+i_style.label_gap_ratio*U)
     return InclineGeometry(

@@ -21,7 +21,7 @@ def draw_block(ax, geo: BlockGeometry, style: BlockStyle = BLOCK_STYLE,
     if show_com:
         dot = mpatches.Circle(
             geo.com.as_tuple(),
-            radius=style.com_r_ratio * U,
+            radius=style.com_r_ratio * geo.width,
             facecolor=style.com_color,
             edgecolor="none",
             zorder=Z_COM_DOT,

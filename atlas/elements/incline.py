@@ -8,13 +8,24 @@ from atlas.constants.tokens import Z_INCLINE_FILL, Z_INCLINE_BORDER, Z_ANGLE_ARC
 def draw_incline(ax, geo: InclineGeometry, style: InclineStyle = INCLINE_STYLE):
     wedge_pts = [geo.A.as_tuple(), geo.B.as_tuple(), geo.C.as_tuple()]
 
+    # Solid fill layer (faint)
     fill = mpatches.Polygon(
         wedge_pts, closed=True,
-        facecolor=style.fill, alpha=style.fill_alpha,
-        edgecolor="none", hatch=style.hatch_pattern,
+        facecolor=style.fill, alpha=0.15,
+        edgecolor="none",
         zorder=Z_INCLINE_FILL,
     )
     ax.add_patch(fill)
+
+    # Hatch layer on top, separate alpha so lines are more visible than fill
+    hatch_poly = mpatches.Polygon(
+        wedge_pts, closed=True,
+        facecolor="none", alpha=0.4,
+        edgecolor=style.fill, linewidth=0,
+        hatch=style.hatch_pattern,
+        zorder=Z_INCLINE_FILL,
+    )
+    ax.add_patch(hatch_poly)
 
     border = mpatches.Polygon(
         wedge_pts, closed=True,
