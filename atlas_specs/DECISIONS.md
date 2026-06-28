@@ -19,6 +19,17 @@ _(populated as decisions are made)_
 ```
 
 ```
+2026-06-27  Session 2  : AtlasFloor LOCKED — golden master committed
+  [FROZEN] SURFACE_LW_PT = 2.0
+  [FROZEN] HATCH_DEPTH_RATIO = 0.55
+  [FROZEN] fill = #D1D5DB  alpha=0.55  hatch=#9CA3AF
+  [FROZEN] side: bottom=floor top=ceiling left=left-wall right=right-wall
+  [FROZEN] Wall block rotated 90deg — H/2 offset from wall not W/2
+  [FROZEN] mg through floor is CORRECT FBD convention — not a bug
+  [FROZEN] AtlasFloor in atlas/visual/floor.py — DO NOT MODIFY
+```
+
+```
 2026-06-27  Session 2  : AtlasBlock LOCKED — golden master committed
   [FROZEN] BLOCK_W_RATIO  = 2.2
   [FROZEN] BLOCK_H_RATIO  = 1.4
