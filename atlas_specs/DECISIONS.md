@@ -19,6 +19,18 @@ _(populated as decisions are made)_
 ```
 
 ```
+2026-06-27  Session 2  : AtlasBlock LOCKED — golden master committed
+  [FROZEN] BLOCK_W_RATIO  = 2.2
+  [FROZEN] BLOCK_H_RATIO  = 1.4
+  [FROZEN] BLOCK_RX_RATIO = 0.05
+  [FROZEN] BLOCK_LW_PT    = 1.5
+  [FROZEN] BLOCK_FILL     = #EFF6FF
+  [FROZEN] BLOCK_BORDER   = #000000
+  [FROZEN] Contact geometry: bottom_centre = cy - H/2 in normal direction
+  [FROZEN] AtlasBlock in atlas/visual/block.py — DO NOT MODIFY
+```
+
+```
 2026-06-27  Session 2  : AtlasArrow LOCKED — golden master committed
   [FROZEN] Arrow appearance locked in tests/golden/arrow_golden_master.png
   [FROZEN] HEAD fixed size = ARROW_HEAD_RATIO * ARROW_N_RATIO * U

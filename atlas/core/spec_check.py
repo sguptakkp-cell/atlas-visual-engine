@@ -14,14 +14,15 @@ import re
 FROZEN_SPEC = {
     "ARROW_HEAD_RATIO":         0.22,
     "ARROW_WIDTH_RATIO":        0.10,
-    "ARROW_SHAFT_RATIO":        0.28,
+    "ARROW_SHAFT_LW_PT":        2.0,
+    "ARROW_LABEL_SIZE_PT":      12.0,
     "ARROW_N_RATIO":            3.2,
     "ARROW_MG_RATIO":           2.8,
     "ARROW_F_RATIO":            2.4,
     "ARROW_T_RATIO":            3.0,
     "BLOCK_W_RATIO":            2.2,
     "BLOCK_H_RATIO":            1.4,
-    "BLOCK_RX_RATIO":           0.08,
+    "BLOCK_RX_RATIO":           0.05,
     "BLOCK_LW_RATIO":           0.18,
     "INCLINE_RENDER_ANGLE_DEG": 20.0,
     "CANVAS_H_RATIO":           10.0,
@@ -151,7 +152,7 @@ def validate_spec():
         )
 
     print(
-        "✓ Atlas spec validation passed\n"
+        "OK Atlas spec validation passed\n"
         "  Level 1: all token values match frozen spec\n"
         "  Level 2: all drawing files use spec values correctly"
     )
