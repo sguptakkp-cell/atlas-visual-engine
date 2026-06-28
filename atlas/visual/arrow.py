@@ -1,9 +1,12 @@
 import math
 
-from atlas.constants.tokens import ARROW_HEAD_RATIO, ARROW_WIDTH_RATIO, ARROW_SHAFT_RATIO
+from atlas.constants.tokens import (
+    ARROW_HEAD_RATIO, ARROW_WIDTH_RATIO,
+    ARROW_SHAFT_LW_PT, ARROW_LABEL_SIZE_PT,
+    ARROW_N_RATIO,
+)
 from atlas.constants.colors import VALID_FORCE_COLORS
 
-LABEL_SIZE_RATIO   = 2.0
 LABEL_OFFSET_RATIO = 0.20
 
 
@@ -32,12 +35,13 @@ class AtlasArrow:
         if label not in ("N", "mg", "T", "f", "F", ""):
             raise AtlasArrowError(f"label '{label}' not in approved labels")
 
-        # FROZEN APPEARANCE
-        self.head_len     = ARROW_HEAD_RATIO  * length
-        self.head_width   = ARROW_WIDTH_RATIO * length
-        self.shaft_lw     = ARROW_SHAFT_RATIO * U
-        self.label_size   = LABEL_SIZE_RATIO  * U
-        self.label_offset = LABEL_OFFSET_RATIO * U
+        # FROZEN APPEARANCE — head size fixed to N reference length, not proportional to L
+        reference_L       = ARROW_N_RATIO * U
+        self.head_len     = ARROW_HEAD_RATIO  * reference_L
+        self.head_width   = ARROW_WIDTH_RATIO * reference_L
+        self.shaft_lw     = ARROW_SHAFT_LW_PT
+        self.label_size   = ARROW_LABEL_SIZE_PT
+        self.label_offset = 0.20 * U
 
         # GEOMETRY
         self.tail_x = tail_x
@@ -65,9 +69,10 @@ class AtlasArrow:
         self.b2_x = self.shaft_end_x - self.perp_x * hw
         self.b2_y = self.shaft_end_y - self.perp_y * hw
 
-        # label position
-        self.label_x = self.tip_x + self.perp_x * self.label_offset
-        self.label_y = self.tip_y + self.perp_y * self.label_offset
+        # label position — beyond tip in arrow direction + perpendicular offset
+        beyond = self.head_len * 0.15
+        self.label_x = self.tip_x + dir_x * beyond + self.perp_x * self.label_offset
+        self.label_y = self.tip_y + dir_y * beyond + self.perp_y * self.label_offset
 
     def render(self, ax):
         # shaft

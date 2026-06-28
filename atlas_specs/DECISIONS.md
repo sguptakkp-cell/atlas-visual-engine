@@ -18,6 +18,16 @@ _(populated as decisions are made)_
   [FROZEN] This matches actual JEE diagram convention exactly
 ```
 
+```
+2026-06-27  Session 2  : AtlasArrow LOCKED — golden master committed
+  [FROZEN] Arrow appearance locked in tests/golden/arrow_golden_master.png
+  [FROZEN] HEAD fixed size = ARROW_HEAD_RATIO * ARROW_N_RATIO * U
+  [FROZEN] SHAFT_LW = 2.0pt fixed
+  [FROZEN] LABEL_SIZE = 12.0pt fixed
+  [FROZEN] Label position = tip + dir*0.15*head_len + perp*0.20*U
+  [FROZEN] AtlasArrow class in atlas/visual/arrow.py — DO NOT MODIFY
+```
+
 ---
 
 ## Atlas Engineering Rules (AER)
