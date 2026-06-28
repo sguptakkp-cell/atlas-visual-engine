@@ -8,15 +8,19 @@ from atlas.styles.canvas_style import CanvasStyle, CANVAS_STYLE
 
 
 def fig_clean(U: float = 0.6, scenario: str = "default",
+              canvas_w: float = None, canvas_h: float = None,
               style: CanvasStyle = CANVAS_STYLE):
-    """Return (fig, ax) sized and clipped for the given scenario.
+    """Return (fig, ax) for the given canvas dimensions.
 
-    scenario="default"  → 8U × 10U canvas
-    scenario="incline"  → 12U × 10U canvas
+    Pass canvas_w/canvas_h to override ratio-based sizing (e.g. for block-relative inclines).
+    scenario="default"  → 8U × 10U
+    scenario="incline"  → 12U × 10U  (only used when canvas_w/canvas_h are None)
     """
-    w_ratio = style.w_incl_ratio if scenario == "incline" else style.w_ratio
-    canvas_w = w_ratio * U
-    canvas_h = style.h_ratio * U
+    if canvas_w is None:
+        w_ratio = style.w_incl_ratio if scenario == "incline" else style.w_ratio
+        canvas_w = w_ratio * U
+    if canvas_h is None:
+        canvas_h = style.h_ratio * U
     fig, ax = plt.subplots(figsize=(canvas_w, canvas_h))
     fig.patch.set_facecolor(style.bg_color)
     ax.set_facecolor(style.bg_color)

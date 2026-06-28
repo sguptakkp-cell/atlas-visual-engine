@@ -1,4 +1,5 @@
 """Atlas Elements - incline (wedge) renderer."""
+import matplotlib as mpl
 import matplotlib.patches as mpatches
 from atlas.geometry.incline_geo import InclineGeometry
 from atlas.styles.incline_style import InclineStyle, INCLINE_STYLE
@@ -8,29 +9,33 @@ from atlas.constants.tokens import Z_INCLINE_FILL, Z_INCLINE_BORDER, Z_ANGLE_ARC
 def draw_incline(ax, geo: InclineGeometry, style: InclineStyle = INCLINE_STYLE):
     wedge_pts = [geo.A.as_tuple(), geo.B.as_tuple(), geo.C.as_tuple()]
 
-    # Solid fill layer (faint)
+    # Solid fill — almost transparent, just a surface hint
     fill = mpatches.Polygon(
         wedge_pts, closed=True,
-        facecolor=style.fill, alpha=0.15,
+        facecolor=style.fill, alpha=0.12,
         edgecolor="none",
         zorder=Z_INCLINE_FILL,
     )
     ax.add_patch(fill)
 
-    # Hatch layer on top, separate alpha so lines are more visible than fill
+    # Hatch layer — separate alpha so lines are independently controlled
+    old_lw = mpl.rcParams["hatch.linewidth"]
+    mpl.rcParams["hatch.linewidth"] = 0.6
     hatch_poly = mpatches.Polygon(
         wedge_pts, closed=True,
-        facecolor="none", alpha=0.4,
+        facecolor="none", alpha=0.25,
         edgecolor=style.fill, linewidth=0,
-        hatch=style.hatch_pattern,
+        hatch="/",
         zorder=Z_INCLINE_FILL,
     )
     ax.add_patch(hatch_poly)
+    mpl.rcParams["hatch.linewidth"] = old_lw
 
+    # Wedge outline — thin, visually secondary
     border = mpatches.Polygon(
         wedge_pts, closed=True,
         facecolor="none", edgecolor=style.fill,
-        linewidth=style.border_lw,
+        linewidth=0.8,
         zorder=Z_INCLINE_BORDER,
     )
     ax.add_patch(border)
@@ -39,7 +44,7 @@ def draw_incline(ax, geo: InclineGeometry, style: InclineStyle = INCLINE_STYLE):
     ax.plot(
         [geo.A.x, geo.C.x], [geo.A.y, geo.C.y],
         color=style.fill,
-        linewidth=style.slope_lw,
+        linewidth=1.8,
         solid_capstyle="round",
         zorder=Z_INCLINE_BORDER,
     )
@@ -49,9 +54,7 @@ def draw_incline(ax, geo: InclineGeometry, style: InclineStyle = INCLINE_STYLE):
         geo.arc_center.as_tuple(),
         width=2 * geo.arc_radius,
         height=2 * geo.arc_radius,
-        angle=0,
-        theta1=0,
-        theta2=geo.theta_deg,
+        angle=0, theta1=0, theta2=geo.theta_deg,
         color=style.label_color,
         linewidth=style.arc_lw_ratio * 10,
         zorder=Z_ANGLE_ARC,

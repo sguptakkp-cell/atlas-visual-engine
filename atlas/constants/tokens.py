@@ -17,6 +17,10 @@ ROPE_HI_ALPHA=0.60; ROPE_LEN_RATIO=3.50; CEILING_W_RATIO=5.50
 INCLINE_BASE_RATIO=12.0; INCLINE_SLOPE_LW=2.5; INCLINE_BORDER_LW=1.8; INCLINE_FILL_ALPHA=0.22
 ARC_RADIUS_RATIO=0.30; ARC_LW_RATIO=0.14; ARC_LABEL_SIZE_RATIO=2.2; ARC_LABEL_GAP_RATIO=0.30
 BLOCK_POS_T=0.55
+BLOCK_REL_SLOPE_MULTIPLIER=5.5   # slope length = 5.5 × block_width (block is 18% of slope)
+HATCH_SPACING_BLOCK=0.09          # incline hatch spacing reference = 0.09 × block_width
+ARC_RADIUS_BLOCK=0.60             # angle arc radius = 0.60 × block_width
+LABEL_OFFSET_BLOCK=0.30           # label offset = 0.30 × block_width
 ALLOWED_ANGLES_DEG={0,30,37,45,53,60,90}
 TRIG={37:{"sin":0.6,"cos":0.8,"tan":0.75},53:{"sin":0.8,"cos":0.6,"tan":1.333}}
 Z_GROUND_HATCH=1; Z_GROUND_LINE=2; Z_ROPE=3; Z_INCLINE_FILL=4; Z_INCLINE_BORDER=5
