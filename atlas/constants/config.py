@@ -8,8 +8,8 @@ Global configuration values.
 # Canvas Defaults
 # ------------------------------------------------------------------
 
-CANVAS_WIDTH = 4              # inches
-CANVAS_HEIGHT = 4             # inches
+CANVAS_WIDTH = 6              # inches
+CANVAS_HEIGHT = 5             # inches
 BACKGROUND_COLOR = "#F8FAFC"
 
 # ------------------------------------------------------------------

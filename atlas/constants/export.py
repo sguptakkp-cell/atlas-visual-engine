@@ -18,7 +18,7 @@ TIGHT_LAYOUT = True
 # FRS Export Settings
 # ------------------------------------------------------------------
 
-DEFAULT_DPI = 150
+DEFAULT_DPI = 200
 DEFAULT_FORMAT = "png"
 BBOX_INCHES = "tight"
 FACECOLOR = "#F8FAFC"

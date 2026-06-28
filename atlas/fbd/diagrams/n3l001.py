@@ -2,11 +2,11 @@
 N3L001 — Block on a floor: Free Body Diagram variants.
 
 Generates 5 PNG files into n3l_diagrams/:
-  N3L001_situation.png        — block on floor, no forces
-  N3L001_option0_correct.png  — W down (green), N up (blue)
-  N3L001_option1_wrong_E03.png — only N shown (missing weight)
-  N3L001_option2_wrong_E02.png — only W shown (missing normal)
-  N3L001_option3_wrong_E04.png — W up, N down (wrong directions)
+  N3L001_situation.png          — block on floor, no forces
+  N3L001_option0_correct.png    — mg down (green, from COM), N up (blue, from bottom edge)
+  N3L001_option1_wrong_E03.png  — only N shown (missing weight)
+  N3L001_option2_wrong_E02.png  — only mg shown (missing normal)
+  N3L001_option3_wrong_E04.png  — mg up, N down (wrong directions)
 """
 
 import sys
@@ -17,19 +17,20 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 import matplotlib
 matplotlib.use("Agg")
 
-from atlas.fbd.helpers import fig_clean, draw_block, draw_ground, draw_force, save
+from atlas.fbd.helpers import fig_clean, draw_block, draw_floor, draw_force, save
 from atlas.constants.colors import COLOR_WEIGHT, COLOR_NORMAL
+from atlas.constants.dimensions import BLOCK_WIDTH, BLOCK_HEIGHT, ARROW_LENGTH
 
 # ------------------------------------------------------------------
-# Scene geometry (all values in data coordinates)
+# Scene geometry (uses current constants so dimensions stay in sync)
 # ------------------------------------------------------------------
 
-CX, CY = 2.0, 1.9          # block center
-BW, BH = 1.2, 0.8          # block width, height
-FLOOR_X = 0.5              # floor left edge
-FLOOR_Y = CY - BH / 2     # floor top = block bottom
-FLOOR_W = 3.0
-ARROW_LEN = 0.9
+CX, CY   = 2.0, 1.9            # block centre
+BW, BH   = BLOCK_WIDTH, BLOCK_HEIGHT    # 1.4 × 0.9
+FLOOR_Y  = CY - BH / 2         # 1.9 − 0.45 = 1.45  (block bottom = floor surface)
+FLOOR_X  = 0.5
+FLOOR_W  = 3.0
+ARROW_LEN = ARROW_LENGTH        # 1.1
 
 
 def _setup_ax(ax):
@@ -38,51 +39,59 @@ def _setup_ax(ax):
 
 
 def _draw_scene(ax):
-    draw_ground(ax, FLOOR_X, FLOOR_Y, width=FLOOR_W, direction="floor")
-    draw_block(ax, CX, CY, width=BW, height=BH, label="Block")
+    draw_floor(ax, FLOOR_X, FLOOR_Y, width=FLOOR_W)
+    draw_block(ax, CX, CY, width=BW, height=BH)
 
 
 def make_situation():
-    fig, ax = fig_clean(4, 4)
+    fig, ax = fig_clean(6, 5)
     _setup_ax(ax)
     _draw_scene(ax)
     return save(fig, "N3L001_situation.png")
 
 
 def make_option0_correct():
-    fig, ax = fig_clean(4, 4)
+    fig, ax = fig_clean(6, 5)
     _setup_ax(ax)
     _draw_scene(ax)
-    draw_force(ax, CX, CY, angle_deg=90,  color=COLOR_NORMAL, label="N", length=ARROW_LEN)
-    draw_force(ax, CX, CY, angle_deg=270, color=COLOR_WEIGHT, label="W", length=ARROW_LEN)
+    # N: contact force — tail at bottom edge (origin_point="edge")
+    draw_force(ax, CX, CY, angle_deg=90,  color=COLOR_NORMAL, label="N",
+               length=ARROW_LEN, origin_point="edge")
+    # mg: body force — tail at centre of mass (origin_point="centre")
+    draw_force(ax, CX, CY, angle_deg=270, color=COLOR_WEIGHT, label="mg",
+               length=ARROW_LEN, origin_point="centre")
     return save(fig, "N3L001_option0_correct.png")
 
 
 def make_option1_wrong_E03():
-    """E03 — missing weight (only normal force shown)."""
-    fig, ax = fig_clean(4, 4)
+    """E03 — missing weight (only N shown)."""
+    fig, ax = fig_clean(6, 5)
     _setup_ax(ax)
     _draw_scene(ax)
-    draw_force(ax, CX, CY, angle_deg=90, color=COLOR_NORMAL, label="N", length=ARROW_LEN)
+    draw_force(ax, CX, CY, angle_deg=90, color=COLOR_NORMAL, label="N",
+               length=ARROW_LEN, origin_point="edge")
     return save(fig, "N3L001_option1_wrong_E03.png")
 
 
 def make_option2_wrong_E02():
-    """E02 — missing normal (only weight shown)."""
-    fig, ax = fig_clean(4, 4)
+    """E02 — missing normal (only mg shown)."""
+    fig, ax = fig_clean(6, 5)
     _setup_ax(ax)
     _draw_scene(ax)
-    draw_force(ax, CX, CY, angle_deg=270, color=COLOR_WEIGHT, label="W", length=ARROW_LEN)
+    draw_force(ax, CX, CY, angle_deg=270, color=COLOR_WEIGHT, label="mg",
+               length=ARROW_LEN, origin_point="centre")
     return save(fig, "N3L001_option2_wrong_E02.png")
 
 
 def make_option3_wrong_E04():
-    """E04 — wrong directions: W up, N down."""
-    fig, ax = fig_clean(4, 4)
+    """E04 — wrong directions: mg up, N down."""
+    fig, ax = fig_clean(6, 5)
     _setup_ax(ax)
     _draw_scene(ax)
-    draw_force(ax, CX, CY, angle_deg=90,  color=COLOR_WEIGHT, label="W", length=ARROW_LEN)
-    draw_force(ax, CX, CY, angle_deg=270, color=COLOR_NORMAL, label="N", length=ARROW_LEN)
+    draw_force(ax, CX, CY, angle_deg=90,  color=COLOR_WEIGHT, label="mg",
+               length=ARROW_LEN, origin_point="centre")
+    draw_force(ax, CX, CY, angle_deg=270, color=COLOR_NORMAL, label="N",
+               length=ARROW_LEN, origin_point="edge")
     return save(fig, "N3L001_option3_wrong_E04.png")
 
 

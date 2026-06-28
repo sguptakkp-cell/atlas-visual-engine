@@ -27,17 +27,17 @@ GRID_LINE_WIDTH = 0.5
 # ------------------------------------------------------------------
 
 ARROW_LINE_WIDTH = 3.0
-ARROW_HEAD_WIDTH = 0.12
-ARROW_HEAD_LENGTH = 0.16
-ARROW_LENGTH = 0.9
+ARROW_HEAD_WIDTH = 0.15
+ARROW_HEAD_LENGTH = 0.20
+ARROW_LENGTH = 1.1
 
 # ------------------------------------------------------------------
 # FRS Object Dimensions
 # ------------------------------------------------------------------
 
-BLOCK_WIDTH = 1.2
-BLOCK_HEIGHT = 0.8
-BALL_RADIUS = 0.35
+BLOCK_WIDTH = 1.4
+BLOCK_HEIGHT = 0.9
+BALL_RADIUS = 0.4
 
 # ------------------------------------------------------------------
 # FRS Border Widths
@@ -50,4 +50,4 @@ GROUND_BORDER_WIDTH = 1.5
 # FRS Label Offset
 # ------------------------------------------------------------------
 
-LABEL_OFFSET = 0.25
+LABEL_OFFSET = 0.30

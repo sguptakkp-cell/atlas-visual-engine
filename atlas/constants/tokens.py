@@ -1,0 +1,48 @@
+"""
+Atlas Constants - Tokens. Single source of truth for ALL dimensions.
+U = canvas_height / 10. Every dimension = ratio * U. STATUS: FROZEN
+"""
+CANVAS_H_RATIO=10.0; CANVAS_W_RATIO=8.0; CANVAS_W_INCL_RATIO=12.0; CANVAS_MARGIN_RATIO=0.6
+DPI_SCREEN=200; DPI_TABLET=150; DPI_PRINT=300
+BLOCK_W_RATIO=2.2; BLOCK_H_RATIO=1.4; BLOCK_RX_RATIO=0.08; BLOCK_LW_RATIO=0.25
+COM_R_RATIO=0.08
+ARROW_HEAD_RATIO=0.22; ARROW_WIDTH_RATIO=0.10; ARROW_SHAFT_RATIO=0.28
+ARROW_N_RATIO=2.5; ARROW_MG_RATIO=2.0; ARROW_T_RATIO=2.3; ARROW_F_RATIO=1.8
+ARROW_SCALE_FIXED="fixed"; ARROW_SCALE_PHYSICAL="physical"
+ARROW_F_REFERENCE=9.8
+LABEL_SIZE_RATIO=2.0; LABEL_GAP_RATIO=0.15; LABEL_OFFSET_RATIO=0.20
+SURFACE_LW_RATIO=0.30; HATCH_DEPTH_RATIO=0.55; HATCH_LW_PX=1.1; HATCH_SPACING_PX=8
+ROPE_LW_OUTER_RATIO=0.17; ROPE_LW_MID_RATIO=0.11; ROPE_LW_HI_RATIO=0.04
+ROPE_HI_ALPHA=0.60; ROPE_LEN_RATIO=3.50; CEILING_W_RATIO=5.50
+INCLINE_BASE_RATIO=9.0; INCLINE_SLOPE_LW=2.5; INCLINE_BORDER_LW=1.8; INCLINE_FILL_ALPHA=0.22
+ARC_RADIUS_RATIO=0.90; ARC_LW_RATIO=0.20; ARC_LABEL_SIZE_RATIO=2.2; ARC_LABEL_GAP_RATIO=0.30
+BLOCK_POS_T=0.45
+ALLOWED_ANGLES_DEG={0,30,37,45,53,60,90}
+TRIG={37:{"sin":0.6,"cos":0.8,"tan":0.75},53:{"sin":0.8,"cos":0.6,"tan":1.333}}
+Z_GROUND_HATCH=1; Z_GROUND_LINE=2; Z_ROPE=3; Z_INCLINE_FILL=4; Z_INCLINE_BORDER=5
+Z_BLOCK_FILL=6; Z_BLOCK_BORDER=7; Z_COM_DOT=8; Z_ARROW_SHAFT=9; Z_ARROW_HEAD=10
+Z_FORCE_LABEL=11; Z_ANGLE_ARC=12; Z_ANGLE_LABEL=13; Z_ANNOTATION=14
+FONT_FAMILY="DejaVu Serif"; FONT_STYLE="italic"; FONT_WEIGHT="bold"
+FONT_BLOCK_SIZE_RATIO=1.6
+
+def compute_tokens(U):
+    return {
+        "U":U,"canvas_h":CANVAS_H_RATIO*U,"canvas_w":CANVAS_W_RATIO*U,
+        "block_w":BLOCK_W_RATIO*U,"block_h":BLOCK_H_RATIO*U,"block_rx":BLOCK_RX_RATIO*U,
+        "arrow_head":ARROW_HEAD_RATIO,"arrow_width":ARROW_WIDTH_RATIO,
+        "arrow_shaft_lw":ARROW_SHAFT_RATIO*U,
+        "arrow_n_len":ARROW_N_RATIO*U,"arrow_mg_len":ARROW_MG_RATIO*U,
+        "label_size":LABEL_SIZE_RATIO*U,"arc_radius":ARC_RADIUS_RATIO*U,
+    }
+
+def print_spec_report(canvas_height=6.0):
+    U=canvas_height/10; t=compute_tokens(U)
+    bar="─"*52
+    print(f"\n{bar}\n  Atlas Visual Engine — Spec Report")
+    print(f"  canvas_height={canvas_height}  U={U:.4f}\n{bar}")
+    print(f"  Canvas  {t['canvas_w']:.3f} x {t['canvas_h']:.3f}")
+    print(f"  Block   {t['block_w']:.3f} x {t['block_h']:.3f}  rx={t['block_rx']:.3f}")
+    print(f"  Arrow   HEAD={ARROW_HEAD_RATIO}xL  WIDTH={ARROW_WIDTH_RATIO}xL  SHAFT={t['arrow_shaft_lw']:.3f}pt (fixed)")
+    print(f"  N={t['arrow_n_len']:.3f}  mg={t['arrow_mg_len']:.3f}")
+    print(f"  Label   {t['label_size']:.3f}pt")
+    print(f"  Arc_r   {t['arc_radius']:.3f}\n{bar}\n")
