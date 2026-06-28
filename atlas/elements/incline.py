@@ -1,0 +1,60 @@
+"""Atlas Elements - incline (wedge) renderer."""
+import matplotlib.patches as mpatches
+from atlas.geometry.incline_geo import InclineGeometry
+from atlas.styles.incline_style import InclineStyle, INCLINE_STYLE
+from atlas.constants.tokens import Z_INCLINE_FILL, Z_INCLINE_BORDER, Z_ANGLE_ARC, Z_ANGLE_LABEL
+
+
+def draw_incline(ax, geo: InclineGeometry, style: InclineStyle = INCLINE_STYLE):
+    wedge_pts = [geo.A.as_tuple(), geo.B.as_tuple(), geo.C.as_tuple()]
+
+    fill = mpatches.Polygon(
+        wedge_pts, closed=True,
+        facecolor=style.fill, alpha=style.fill_alpha,
+        edgecolor="none", hatch=style.hatch_pattern,
+        zorder=Z_INCLINE_FILL,
+    )
+    ax.add_patch(fill)
+
+    border = mpatches.Polygon(
+        wedge_pts, closed=True,
+        facecolor="none", edgecolor=style.fill,
+        linewidth=style.border_lw,
+        zorder=Z_INCLINE_BORDER,
+    )
+    ax.add_patch(border)
+
+    # Bold slope line (hypotenuse A→C)
+    ax.plot(
+        [geo.A.x, geo.C.x], [geo.A.y, geo.C.y],
+        color=style.fill,
+        linewidth=style.slope_lw,
+        solid_capstyle="round",
+        zorder=Z_INCLINE_BORDER,
+    )
+
+    # Angle arc
+    arc = mpatches.Arc(
+        geo.arc_center.as_tuple(),
+        width=2 * geo.arc_radius,
+        height=2 * geo.arc_radius,
+        angle=0,
+        theta1=0,
+        theta2=geo.theta_deg,
+        color=style.label_color,
+        linewidth=style.arc_lw_ratio * 10,
+        zorder=Z_ANGLE_ARC,
+    )
+    ax.add_patch(arc)
+
+    ax.text(
+        geo.arc_label_pos.x, geo.arc_label_pos.y,
+        f"θ={geo.theta_deg:.0f}°",
+        ha="center", va="center",
+        fontsize=style.label_size_ratio * 8,
+        fontstyle=style.label_style,
+        fontweight=style.label_weight,
+        fontfamily=style.label_font,
+        color=style.label_color,
+        zorder=Z_ANGLE_LABEL,
+    )
