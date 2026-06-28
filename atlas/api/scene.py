@@ -1,17 +1,14 @@
 """Atlas API - PhysicsScene: one-call incline FBD renderer."""
-import matplotlib.patches as mpatches
-
 from atlas.geometry.incline_geo import compute_incline
 from atlas.geometry.block_geo import compute_block
 from atlas.geometry.arrow_geo import compute_arrow
 from atlas.physics.incline import InclineInput, compute_frame
-from atlas.styles.block_style import BLOCK_STYLE
 from atlas.styles.arrow_style import ARROW_STYLE
 from atlas.elements.block import draw_block
 from atlas.elements.arrow import draw_arrow
 from atlas.elements.incline import draw_incline
 from atlas.renderer.canvas import fig_clean, save
-from atlas.constants.tokens import Z_COM_DOT, INCLINE_RENDER_ANGLE_DEG
+from atlas.constants.tokens import INCLINE_RENDER_ANGLE_DEG
 
 
 class PhysicsScene:
@@ -24,7 +21,6 @@ class PhysicsScene:
 
     def render(self, filename: str = "output.png") -> str:
         U = self.U
-        BLOCK_W = BLOCK_STYLE.width_ratio * U
 
         # Incline geometry — visual angle 20° (AER-001); physics angle in label
         incline_geo = compute_incline(self.theta_deg, U)
@@ -43,16 +39,7 @@ class PhysicsScene:
             U,
             rotation_deg=INCLINE_RENDER_ANGLE_DEG,
         )
-        draw_block(ax, block_geo, show_com=False)
-
-        # COM dot — tiny black circle, drawn explicitly
-        com_dot = mpatches.Circle(
-            block_geo.com.as_tuple(),
-            radius=0.03 * BLOCK_W,
-            facecolor="black", edgecolor="none",
-            zorder=Z_COM_DOT,
-        )
-        ax.add_patch(com_dot)
+        draw_block(ax, block_geo, show_com=True)
 
         # Physics at actual angle (self.theta_deg); geometry follows visual angle
         inp = InclineInput(
@@ -71,16 +58,16 @@ class PhysicsScene:
                 tail = block_geo.bottom_centre
                 direction = nv_visual
             elif force.name == "f":
-                # Near COM, offset down visual slope; direction up visual slope
-                tail = block_geo.com - sv_visual * (0.08 * BLOCK_W)
+                # Friction: tail at COM, direction up visual slope
+                tail = block_geo.com
                 direction = sv_visual
             else:
                 # Body force (mg): tail at COM, direction straight down
                 tail = block_geo.com
                 direction = force.direction
 
-            length = ARROW_STYLE.get_length(force.name, U)
-            arrow_geo = compute_arrow(tail, direction, length, U)
+            L = ARROW_STYLE.get_length(force.name, U)
+            arrow_geo = compute_arrow(tail, direction, L, U)
             draw_arrow(ax, arrow_geo, force.color, label=force.label)
 
         return save(fig, filename)

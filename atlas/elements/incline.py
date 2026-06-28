@@ -3,11 +3,37 @@ import matplotlib as mpl
 import matplotlib.patches as mpatches
 from atlas.geometry.incline_geo import InclineGeometry
 from atlas.styles.incline_style import InclineStyle, INCLINE_STYLE
-from atlas.constants.tokens import Z_INCLINE_FILL, Z_INCLINE_BORDER, Z_ANGLE_ARC, Z_ANGLE_LABEL
+from atlas.constants.tokens import (
+    Z_GROUND_HATCH, Z_GROUND_LINE,
+    Z_INCLINE_FILL, Z_INCLINE_BORDER, Z_ANGLE_ARC, Z_ANGLE_LABEL,
+    INCLINE_ANGLE_LABEL,
+)
 
 
 def draw_incline(ax, geo: InclineGeometry, style: InclineStyle = INCLINE_STYLE):
+    U = geo.U
     wedge_pts = [geo.A.as_tuple(), geo.B.as_tuple(), geo.C.as_tuple()]
+
+    # Floor line below wedge base
+    ax.plot(
+        [geo.A.x - 0.5 * U, geo.C.x + 0.5 * U],
+        [geo.A.y, geo.A.y],
+        color="#000000", linewidth=1.5, zorder=Z_GROUND_LINE,
+    )
+
+    # Ground hatch below floor line
+    old_lw = mpl.rcParams["hatch.linewidth"]
+    mpl.rcParams["hatch.linewidth"] = 0.6
+    floor_hatch = mpatches.Rectangle(
+        (geo.A.x - 0.5 * U, geo.A.y - 0.3 * U),
+        geo.C.x - geo.A.x + U, 0.3 * U,
+        facecolor="none", alpha=0.4,
+        edgecolor="#64748B", linewidth=0,
+        hatch="////",
+        zorder=Z_GROUND_HATCH,
+    )
+    ax.add_patch(floor_hatch)
+    mpl.rcParams["hatch.linewidth"] = old_lw
 
     # Solid fill — almost transparent, just a surface hint
     fill = mpatches.Polygon(
@@ -63,7 +89,7 @@ def draw_incline(ax, geo: InclineGeometry, style: InclineStyle = INCLINE_STYLE):
 
     ax.text(
         geo.arc_label_pos.x, geo.arc_label_pos.y,
-        f"θ={geo.label_theta_deg:.0f}°",
+        INCLINE_ANGLE_LABEL,
         ha="center", va="center",
         fontsize=style.label_size_ratio * 8,
         fontstyle=style.label_style,

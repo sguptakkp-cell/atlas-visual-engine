@@ -17,7 +17,7 @@ class InclineGeometry:
     block_anchor:Vector2; block_centre:Vector2
     arc_center:Vector2; arc_radius:float; arc_label_pos:Vector2
     canvas_w:float; canvas_h:float
-    label_theta_deg:float
+    label_theta_deg:float; U:float
 
 
 def compute_incline(physics_theta_deg, U, i_style=INCLINE_STYLE, b_style=BLOCK_STYLE):
@@ -66,7 +66,7 @@ def compute_incline(physics_theta_deg, U, i_style=INCLINE_STYLE, b_style=BLOCK_S
         math.cos(math.radians(INCLINE_RENDER_ANGLE_DEG / 2)),
         math.sin(math.radians(INCLINE_RENDER_ANGLE_DEG / 2)),
     )
-    lp = A + bis * (arc_r + i_style.label_gap_ratio * U)
+    lp = A + bis * (arc_r + 0.5 * U)
 
     return InclineGeometry(
         A=A, B=B, C=C,
@@ -77,5 +77,5 @@ def compute_incline(physics_theta_deg, U, i_style=INCLINE_STYLE, b_style=BLOCK_S
         arc_center=A, arc_radius=arc_r,
         arc_label_pos=lp,
         canvas_w=canvas_w, canvas_h=canvas_h,
-        label_theta_deg=float(physics_theta_deg),
+        label_theta_deg=float(physics_theta_deg), U=U,
     )
