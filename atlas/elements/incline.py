@@ -63,7 +63,7 @@ def draw_incline(ax, geo: InclineGeometry, style: InclineStyle = INCLINE_STYLE):
 
     ax.text(
         geo.arc_label_pos.x, geo.arc_label_pos.y,
-        f"θ={geo.theta_deg:.0f}°",
+        f"θ={geo.label_theta_deg:.0f}°",
         ha="center", va="center",
         fontsize=style.label_size_ratio * 8,
         fontstyle=style.label_style,

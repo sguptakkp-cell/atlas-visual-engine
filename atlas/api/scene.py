@@ -11,7 +11,7 @@ from atlas.elements.block import draw_block
 from atlas.elements.arrow import draw_arrow
 from atlas.elements.incline import draw_incline
 from atlas.renderer.canvas import fig_clean, save
-from atlas.constants.tokens import Z_COM_DOT
+from atlas.constants.tokens import Z_COM_DOT, INCLINE_RENDER_ANGLE_DEG
 
 
 class PhysicsScene:
@@ -26,7 +26,7 @@ class PhysicsScene:
         U = self.U
         BLOCK_W = BLOCK_STYLE.width_ratio * U
 
-        # Incline geometry — canvas size derived from block/wedge proportions
+        # Incline geometry — visual angle 20° (AER-001); physics angle in label
         incline_geo = compute_incline(self.theta_deg, U)
         fig, ax = fig_clean(
             U=U,
@@ -36,12 +36,12 @@ class PhysicsScene:
 
         draw_incline(ax, incline_geo)
 
-        # Block rotated flush to slope
+        # Block rotated at visual render angle (20°), not physics angle
         block_geo = compute_block(
             incline_geo.block_centre.x,
             incline_geo.block_centre.y,
             U,
-            rotation_deg=self.theta_deg,
+            rotation_deg=INCLINE_RENDER_ANGLE_DEG,
         )
         draw_block(ax, block_geo, show_com=False)
 
@@ -54,25 +54,28 @@ class PhysicsScene:
         )
         ax.add_patch(com_dot)
 
-        # Physics at t=0
+        # Physics at actual angle (self.theta_deg); geometry follows visual angle
         inp = InclineInput(
             theta_deg=self.theta_deg, mu=self.mu,
             active_forces=self.active_forces,
         )
         frame = compute_frame(inp, t=0, block_centre=incline_geo.block_centre)
-        sv = frame.slope_vec
+
+        # Visual vectors from 20° geometry (AER-001)
+        sv_visual = incline_geo.slope_vec
+        nv_visual = incline_geo.normal_vec
 
         for force in frame.forces:
             if force.name == "N":
-                # Contact force: tail at slope contact surface, direction explicit
+                # Contact force: tail at block base, direction along visual normal
                 tail = block_geo.bottom_centre
-                direction = incline_geo.normal_vec
+                direction = nv_visual
             elif force.name == "f":
-                # Near COM, offset down-slope to separate from mg label
-                tail = block_geo.com - sv * (0.08 * BLOCK_W)
-                direction = force.direction
+                # Near COM, offset down visual slope; direction up visual slope
+                tail = block_geo.com - sv_visual * (0.08 * BLOCK_W)
+                direction = sv_visual
             else:
-                # Body force (mg): tail at COM
+                # Body force (mg): tail at COM, direction straight down
                 tail = block_geo.com
                 direction = force.direction
 

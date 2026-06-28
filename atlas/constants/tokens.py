@@ -23,6 +23,7 @@ BLOCK_REL_SLOPE_MULTIPLIER=5.5   # slope length = 5.5 × block_width (block is 1
 HATCH_SPACING_BLOCK=0.09          # incline hatch spacing reference = 0.09 × block_width
 ARC_RADIUS_BLOCK=0.60             # angle arc radius = 0.60 × block_width
 LABEL_OFFSET_BLOCK=0.30           # label offset = 0.30 × block_width
+INCLINE_RENDER_ANGLE_DEG=20.0        # AER-001: visual angle always 20°, physics in label
 ALLOWED_ANGLES_DEG={0,30,37,45,53,60,90}
 TRIG={37:{"sin":0.6,"cos":0.8,"tan":0.75},53:{"sin":0.8,"cos":0.6,"tan":1.333}}
 Z_GROUND_HATCH=1; Z_GROUND_LINE=2; Z_ROPE=3; Z_INCLINE_FILL=4; Z_INCLINE_BORDER=5
