@@ -30,7 +30,7 @@ def compute_frame(inp,t,block_centre):
     if "N"  in inp.active_forces: forces.append(Force("N", N_mag, nv,       block_centre))
     if "mg" in inp.active_forces: forces.append(Force("mg",mg_mag,UNIT_DOWN, block_centre))
     if "f"  in inp.active_forces and f_mag>0:
-        fd=sv if v<0 else sv*-1
+        fd=sv  # friction opposes motion: block slides down, so f points up slope
         forces.append(Force("f",f_mag,fd,block_centre))
     return InclineFrame(
         time=t,position=sv*s,velocity=sv*v,acceleration=sv*a,

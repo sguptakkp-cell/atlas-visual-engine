@@ -64,17 +64,20 @@ class PhysicsScene:
 
         for force in frame.forces:
             if force.name == "N":
-                # Contact force — tail at slope contact surface
+                # Contact force: tail at slope contact surface, direction explicit
                 tail = block_geo.bottom_centre
+                direction = incline_geo.normal_vec
             elif force.name == "f":
-                # Near COM but offset down-slope to separate from mg label
+                # Near COM, offset down-slope to separate from mg label
                 tail = block_geo.com - sv * (0.08 * BLOCK_W)
+                direction = force.direction
             else:
-                # Body force (mg) — tail at COM
+                # Body force (mg): tail at COM
                 tail = block_geo.com
+                direction = force.direction
 
             length = ARROW_STYLE.get_length(force.name, U)
-            arrow_geo = compute_arrow(tail, force.direction, length, U)
+            arrow_geo = compute_arrow(tail, direction, length, U)
             draw_arrow(ax, arrow_geo, force.color, label=force.label)
 
         return save(fig, filename)

@@ -34,9 +34,14 @@ def compute_incline(theta_deg, U, i_style=INCLINE_STYLE, b_style=BLOCK_STYLE):
     base = slope_len * math.cos(t)
     height = slope_len * math.sin(t)
 
-    # Canvas sized to wedge + 3U margin on each axis
-    canvas_w = base + 3.0 * U
-    canvas_h = height + 3.0 * U
+    # Canvas: wedge + margin, always landscape (h ≤ 75% of w)
+    canvas_w = base + 3.5 * U
+    if height > canvas_w * 0.72:
+        scale = (canvas_w * 0.65) / height
+        base *= scale
+        height *= scale
+        slope_len *= scale  # keep block position consistent
+    canvas_h = min(height + 3.0 * U, canvas_w * 0.75)
 
     # Wedge origin: 1.5U from bottom-left of canvas
     x0 = 1.5 * U
