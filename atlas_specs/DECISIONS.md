@@ -60,8 +60,22 @@ _(populated as decisions are made)_
   [FROZEN] HEAD fixed size = ARROW_HEAD_RATIO * ARROW_N_RATIO * U
   [FROZEN] SHAFT_LW = 2.0pt fixed
   [FROZEN] LABEL_SIZE = 12.0pt fixed
-  [FROZEN] Label position = tip + dir*0.15*head_len + perp*0.20*U
+  [FROZEN] Label offset = 0.35 * U perpendicular from arrow direction
   [FROZEN] AtlasArrow class in atlas/visual/arrow.py — DO NOT MODIFY
+```
+
+```
+2026-06-29  Session 3  : All 5 visual classes LOCKED with golden masters
+  [FROZEN] AtlasArrow  — self-contained, force_name API
+  [FROZEN] AtlasBlock  — H-relative, contact points
+  [FROZEN] AtlasFloor  — 4 surfaces verified
+  [FROZEN] AtlasRope   — 3-stroke cylindrical
+  [FROZEN] AtlasIncline — 20deg render, theta label
+  [FROZEN] H = BLOCK_H_RATIO * U = master reference
+  [FROZEN] 6 scenarios approved: floor, hanging, incline,
+           2-stack, 3-stack, incline+hanging
+  [FROZEN] COLOR_BLOCK = #DBEAFE
+  [FROZEN] BLOCK_H_RATIO = 1.0
 ```
 
 ---
