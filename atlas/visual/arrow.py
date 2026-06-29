@@ -1,93 +1,114 @@
 import math
 
 from atlas.constants.tokens import (
-    ARROW_HEAD_RATIO, ARROW_WIDTH_RATIO,
-    ARROW_SHAFT_LW_PT, ARROW_LABEL_SIZE_PT,
-    ARROW_N_RATIO,
+    ARROW_LENGTHS, ARROW_HEAD_RATIO, ARROW_WIDTH_RATIO,
+    ARROW_SHAFT_LW_PT, ARROW_LABEL_SIZE_PT, ARROW_LABEL_OFFSET_PT,
+    BLOCK_H_RATIO, Z_ARROW_SHAFT, Z_ARROW_HEAD, Z_FORCE_LABEL,
+    FONT_FAMILY, FONT_STYLE, FONT_WEIGHT,
 )
-from atlas.constants.colors import VALID_FORCE_COLORS
-
-LABEL_OFFSET_RATIO = 0.20
+from atlas.constants.colors import VALID_FORCE_COLORS, get_force_color
 
 
-class AtlasError(Exception):
-    pass
-
-
-class AtlasArrowError(AtlasError):
+class AtlasArrowError(Exception):
     pass
 
 
 class AtlasArrow:
-    def __init__(self, tail_x, tail_y, dir_x, dir_y,
-                 length, color, label, U):
+    """
+    Self-contained force arrow.
+    Caller provides: position, direction, force_name, U.
+    Class computes: length, color, label, head size — everything.
+    """
+    VALID_FORCES = tuple(ARROW_LENGTHS.keys())
+
+    def __init__(self, tail_x, tail_y, dir_x, dir_y, force_name, U):
 
         # VALIDATION
-        mag = math.sqrt(dir_x**2 + dir_y**2)
-        if abs(mag - 1.0) > 1e-6:
-            raise AtlasArrowError(f"direction must be unit vector, got magnitude={mag:.6f}")
-        if length <= 0:
-            raise AtlasArrowError(f"length must be > 0, got {length}")
         if U <= 0:
             raise AtlasArrowError(f"U must be > 0, got {U}")
-        if color not in VALID_FORCE_COLORS.values():
-            raise AtlasArrowError(f"color {color} not in approved palette")
-        if label not in ("N", "mg", "T", "f", "F", ""):
-            raise AtlasArrowError(f"label '{label}' not in approved labels")
+        mag = math.sqrt(dir_x**2 + dir_y**2)
+        if abs(mag - 1.0) > 1e-6:
+            raise AtlasArrowError(
+                f"direction must be unit vector, got magnitude={mag:.6f}")
+        if force_name not in self.VALID_FORCES:
+            raise AtlasArrowError(
+                f"force_name '{force_name}' not valid. "
+                f"Valid: {self.VALID_FORCES}")
 
-        # FROZEN APPEARANCE — head size fixed to N reference length, not proportional to L
-        reference_L       = ARROW_N_RATIO * U
-        self.head_len     = ARROW_HEAD_RATIO  * reference_L
-        self.head_width   = ARROW_WIDTH_RATIO * reference_L
-        self.shaft_lw     = ARROW_SHAFT_LW_PT
-        self.label_size   = ARROW_LABEL_SIZE_PT
-        self.label_offset = 0.20 * U
+        # SELF-CONTAINED — all computed from force_name and U
+        H = BLOCK_H_RATIO * U
+        length = ARROW_LENGTHS[force_name] * H
 
-        # GEOMETRY
-        self.tail_x = tail_x
-        self.tail_y = tail_y
-        self.color  = color
-        self.label  = label
+        self.tail_x     = tail_x
+        self.tail_y     = tail_y
+        self.force_name = force_name
+        self.U          = U
+        self.color      = get_force_color(force_name)
+        self.label      = force_name
+        self.length     = length
 
-        # perpendicular (CCW rotation of direction)
+        # Head — proportional to own L
+        self.head_len   = ARROW_HEAD_RATIO  * length
+        self.head_width = ARROW_WIDTH_RATIO * length
+        self.shaft_lw   = ARROW_SHAFT_LW_PT
+        self.label_size = ARROW_LABEL_SIZE_PT
+        self.label_offset_pts = ARROW_LABEL_OFFSET_PT
+
+        # Direction and perpendicular
+        self.dir_x  = dir_x
+        self.dir_y  = dir_y
         self.perp_x = -dir_y
         self.perp_y =  dir_x
 
-        # head tip
+        # Tip
         self.tip_x = tail_x + dir_x * length
         self.tip_y = tail_y + dir_y * length
 
-        # shaft end
+        # Shaft end (where head triangle base sits)
         shaft_len = length - self.head_len
         self.shaft_end_x = tail_x + dir_x * shaft_len
         self.shaft_end_y = tail_y + dir_y * shaft_len
 
-        # head triangle corners
+        # Head triangle corners
         hw = self.head_width / 2.0
         self.b1_x = self.shaft_end_x + self.perp_x * hw
         self.b1_y = self.shaft_end_y + self.perp_y * hw
         self.b2_x = self.shaft_end_x - self.perp_x * hw
         self.b2_y = self.shaft_end_y - self.perp_y * hw
 
-        # label position — beyond tip in arrow direction + perpendicular offset
-        beyond = self.head_len * 0.15
-        self.label_x = self.tip_x + dir_x * beyond + self.perp_x * self.label_offset
-        self.label_y = self.tip_y + dir_y * beyond + self.perp_y * self.label_offset
-
     def render(self, ax):
-        # shaft
+        # Shaft
         ax.plot([self.tail_x, self.shaft_end_x],
                 [self.tail_y, self.shaft_end_y],
                 color=self.color, lw=self.shaft_lw,
-                solid_capstyle="round", zorder=40)
-        # head
+                solid_capstyle="round", zorder=Z_ARROW_SHAFT)
+
+        # Head
         ax.fill([self.tip_x, self.b1_x, self.b2_x],
                 [self.tip_y, self.b1_y, self.b2_y],
-                color=self.color, zorder=41)
-        # label
+                color=self.color, zorder=Z_ARROW_HEAD)
+
+        # Label — offset in pts from tip, perpendicular to arrow direction
         if self.label:
-            ax.text(self.label_x, self.label_y, self.label,
-                    fontfamily="DejaVu Serif", fontstyle="italic",
-                    fontweight="bold", color=self.color,
-                    fontsize=self.label_size,
-                    ha="center", va="center", zorder=50)
+            offset_x_pts = self.perp_x * self.label_offset_pts
+            offset_y_pts = self.perp_y * self.label_offset_pts
+            if abs(self.perp_x) > abs(self.perp_y):   # label goes left or right
+                ha = "right" if self.perp_x < 0 else "left"
+                va = "center"
+            else:                                       # label goes up or down
+                ha = "center"
+                va = "bottom" if self.perp_y > 0 else "top"
+            ax.annotate(
+                self.label,
+                xy=(self.tip_x, self.tip_y),
+                xytext=(offset_x_pts, offset_y_pts),
+                textcoords="offset points",
+                fontfamily=FONT_FAMILY,
+                fontstyle=FONT_STYLE,
+                fontweight=FONT_WEIGHT,
+                fontsize=self.label_size,
+                color=self.color,
+                ha=ha, va=va,
+                zorder=Z_FORCE_LABEL,
+                annotation_clip=False,
+            )

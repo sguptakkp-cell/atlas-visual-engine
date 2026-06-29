@@ -6,7 +6,7 @@ os.makedirs("tests/golden", exist_ok=True)
 
 from atlas.visual.floor import AtlasFloor, AtlasFloorError
 from atlas.visual.block import AtlasBlock
-from atlas.constants.tokens import SURFACE_LW_PT, HATCH_DEPTH_RATIO
+from atlas.constants.tokens import SURFACE_LW_PT, HATCH_DEPTH_RATIO, get_H
 
 U = 0.6
 PASS = 0; FAIL = 0
@@ -40,7 +40,7 @@ check("x_end   = 5.5",     abs(f.x_end-5.5)<1e-9)
 
 section("3 . Block sits exactly on floor — contact test")
 floor_y = 1.5
-block_cy = floor_y + 1.4*U/2
+block_cy = floor_y + get_H(U)/2
 b = AtlasBlock(3.0, block_cy, U)
 floor = AtlasFloor(0.5, 5.5, floor_y, U)
 gap = b.bottom_cy - floor.contact_y
@@ -75,7 +75,7 @@ ax3.set_aspect("equal"); ax3.axis("off"); ax3.set_facecolor("#FFFFFF")
 ax3.set_title("Block on floor", fontsize=10)
 floor_y = 1.5
 AtlasFloor(0.5, 5.5, floor_y, U).render(ax3)
-AtlasBlock(3.0, floor_y + 1.4*U/2, U).render(ax3)
+AtlasBlock(3.0, floor_y + get_H(U)/2, U).render(ax3)
 
 fig.tight_layout()
 fig.patch.set_facecolor("#FFFFFF")
@@ -93,7 +93,7 @@ check("wall depth=0.55*U", abs(wall.depth-0.55*U)<1e-9)
 
 section("7 . Block against wall — contact test")
 wall_x = 1.0
-block_cx = wall_x + 1.4*U/2   # H/2 when rotated 90
+block_cx = wall_x + get_H(U)/2   # H/2 when rotated 90
 b_wall = AtlasBlock(block_cx, 2.5, U, rotation_deg=90)
 wall_surf = AtlasFloor(0.5, 4.5, wall_x, U, side="right")
 # At rotation=90, top_cx = cx - H/2 is the leftmost (wall-touching) face

@@ -4,8 +4,9 @@ from matplotlib.transforms import Affine2D
 
 from atlas.constants.tokens import (
     BLOCK_W_RATIO, BLOCK_H_RATIO, BLOCK_RX_RATIO, BLOCK_LW_PT,
+    COM_R_RATIO,
     Z_BLOCK_FILL, Z_BLOCK_BORDER, Z_COM_DOT,
-    FONT_FAMILY, FONT_STYLE, FONT_WEIGHT, FONT_BLOCK_SIZE_RATIO,
+    FONT_FAMILY, FONT_STYLE, FONT_WEIGHT,
 )
 from atlas.constants.colors import COLOR_BLOCK, COLOR_BLACK
 
@@ -15,19 +16,28 @@ class AtlasBlockError(Exception):
 
 
 class AtlasBlock:
-    def __init__(self, cx, cy, U, rotation_deg=0.0, label=""):
+    def __init__(self, cx, cy, U, rotation_deg=0.0, label="",
+                 width_scale=1.0, height_scale=1.0):
 
         # VALIDATION
         if U <= 0:
             raise AtlasBlockError(f"U must be > 0, got {U}")
+        if width_scale <= 0:
+            raise AtlasBlockError(f"width_scale must be > 0, got {width_scale}")
+        if height_scale <= 0:
+            raise AtlasBlockError(f"height_scale must be > 0, got {height_scale}")
 
-        # FROZEN APPEARANCE — from spec, never changes
-        self.width  = BLOCK_W_RATIO  * U
-        self.height = BLOCK_H_RATIO  * U
-        self.rx     = BLOCK_RX_RATIO * U
-        self.lw     = BLOCK_LW_PT        # fixed pts — NOT * U
-        self.fill   = COLOR_BLOCK        # #EFF6FF
-        self.border = COLOR_BLACK        # #000000
+        # Master reference: H = BLOCK_H_RATIO * U
+        Hm = BLOCK_H_RATIO * U
+
+        # FROZEN APPEARANCE — all relative to H
+        self.width  = BLOCK_W_RATIO  * Hm * width_scale
+        self.height = Hm * height_scale
+        self.rx     = BLOCK_RX_RATIO * Hm
+        self.lw     = BLOCK_LW_PT           # fixed pts — NOT * U
+        self.com_r  = COM_R_RATIO   * Hm
+        self.fill   = COLOR_BLOCK           # #EFF6FF
+        self.border = COLOR_BLACK           # #000000
         self.label  = label
         self.cx     = cx
         self.cy     = cy
@@ -77,10 +87,9 @@ class AtlasBlock:
         fancy.set_transform(transform)
         ax.add_patch(fancy)
 
-        # CoM dot — tiny black circle
-        com_r = 0.025 * self.U
+        # CoM dot — size from spec
         dot = patches.Circle(
-            (self.com_x, self.com_y), com_r,
+            (self.com_x, self.com_y), self.com_r,
             color=COLOR_BLACK, zorder=Z_COM_DOT)
         ax.add_patch(dot)
 
@@ -90,7 +99,7 @@ class AtlasBlock:
                     fontfamily=FONT_FAMILY,
                     fontstyle=FONT_STYLE,
                     fontweight=FONT_WEIGHT,
-                    fontsize=FONT_BLOCK_SIZE_RATIO * self.U,
+                    fontsize=12.0,
                     color="#1A2744",
                     ha="center", va="center",
                     zorder=Z_BLOCK_BORDER)

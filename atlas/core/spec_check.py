@@ -12,24 +12,35 @@ import os
 import re
 
 FROZEN_SPEC = {
-    "ARROW_HEAD_RATIO":         0.22,
-    "ARROW_WIDTH_RATIO":        0.10,
-    "ARROW_SHAFT_LW_PT":        2.0,
-    "ARROW_LABEL_SIZE_PT":      12.0,
-    "ARROW_N_RATIO":            3.2,
-    "ARROW_MG_RATIO":           2.8,
-    "ARROW_F_RATIO":            2.4,
-    "ARROW_T_RATIO":            3.0,
-    "BLOCK_W_RATIO":            2.2,
-    "BLOCK_H_RATIO":            1.4,
-    "BLOCK_RX_RATIO":           0.05,
-    "BLOCK_LW_RATIO":           0.18,
-    "ROPE_LW_OUTER_PT":         5.0,
-    "ROPE_LW_MID_PT":           3.0,
-    "ROPE_LW_HI_PT":            1.2,
+    # Arrow head — relative to L
+    "ARROW_HEAD_RATIO":       0.22,
+    "ARROW_WIDTH_RATIO":      0.10,
+    # Arrow visual — fixed pts
+    "ARROW_SHAFT_LW_PT":      2.0,
+    "ARROW_LABEL_SIZE_PT":    12.0,
+    "ARROW_LABEL_OFFSET_PT":  10.0,
+    # Arrow lengths — relative to H
+    "ARROW_N_H_RATIO":        1.8,
+    "ARROW_MG_H_RATIO":       1.6,
+    "ARROW_T_H_RATIO":        1.8,
+    "ARROW_F_H_RATIO":        1.2,
+    "ARROW_APP_H_RATIO":      1.5,
+    # Block — relative to H
+    "BLOCK_H_RATIO":          1.0,
+    "BLOCK_W_RATIO":          1.6,
+    "BLOCK_RX_RATIO":         0.03,
+    "BLOCK_LW_PT":            1.5,
+    # Incline
     "INCLINE_RENDER_ANGLE_DEG": 20.0,
-    "CANVAS_H_RATIO":           10.0,
-    "CANVAS_W_RATIO":            8.0,
+    "INCLINE_BASE_RATIO":     9.0,
+    # Stacked
+    "STACK_2_H":              0.75,
+    "STACK_3_H":              0.60,
+    # Export
+    "DPI_SCREEN":             150,
+    "DPI_PRINT":              300,
+    "IMAGE_W_PX":             800,
+    "IMAGE_H_PX":             600,
 }
 
 # These patterns must NOT appear in drawing files

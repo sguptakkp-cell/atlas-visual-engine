@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from atlas.visual.block import AtlasBlock, AtlasBlockError
 from atlas.constants.tokens import (
     BLOCK_W_RATIO, BLOCK_H_RATIO, BLOCK_RX_RATIO, BLOCK_LW_PT,
-    FONT_BLOCK_SIZE_RATIO)
+)
 from atlas.constants.colors import COLOR_BLOCK, COLOR_BLACK
 
 U = 0.6
@@ -27,47 +27,49 @@ def expect_error(desc, fn):
     except Exception as e:  check(f"catches: {desc}", False, str(e))
 
 section("1 . Frozen spec values")
-check("BLOCK_W_RATIO=2.2",      abs(BLOCK_W_RATIO-2.2)<1e-9)
-check("BLOCK_H_RATIO=1.4",      abs(BLOCK_H_RATIO-1.4)<1e-9)
-check("BLOCK_RX_RATIO=0.05",    abs(BLOCK_RX_RATIO-0.05)<1e-9)
-check("BLOCK_LW_PT=1.5",        abs(BLOCK_LW_PT-1.5)<1e-9)
-check("FONT_BLOCK_SIZE_RATIO=16.0", abs(FONT_BLOCK_SIZE_RATIO-16.0)<1e-9)
-check("COLOR_BLOCK=#EFF6FF",    COLOR_BLOCK=="#EFF6FF")
-check("COLOR_BLACK=#000000",    COLOR_BLACK=="#000000")
+check("BLOCK_W_RATIO=1.6",   abs(BLOCK_W_RATIO-1.6)<1e-9)
+check("BLOCK_H_RATIO=1.0",   abs(BLOCK_H_RATIO-1.0)<1e-9)
+check("BLOCK_RX_RATIO=0.03", abs(BLOCK_RX_RATIO-0.03)<1e-9)
+check("BLOCK_LW_PT=1.5",     abs(BLOCK_LW_PT-1.5)<1e-9)
+check("COLOR_BLOCK=#DBEAFE", COLOR_BLOCK=="#DBEAFE")
+check("COLOR_BLACK=#000000", COLOR_BLACK=="#000000")
 
 section("2 . Geometry correctness (flat block)")
 b = AtlasBlock(3.0, 2.5, U, rotation_deg=0.0)
-check("width = 2.2*U",          abs(b.width  - 2.2*U)<1e-9, f"got {b.width:.6f}")
-check("height = 1.4*U",         abs(b.height - 1.4*U)<1e-9, f"got {b.height:.6f}")
-check("rx = 0.05*U",            abs(b.rx     - 0.05*U)<1e-9, f"got {b.rx:.6f}")
-check("lw = 1.5pt",             abs(b.lw     - 1.5)<1e-9,   f"got {b.lw}")
-check("fill = #EFF6FF",         b.fill   == "#EFF6FF")
-check("border = #000000",       b.border == "#000000")
-check("cx stored",              abs(b.cx - 3.0)<1e-9)
-check("cy stored",              abs(b.cy - 2.5)<1e-9)
-check("com_x = cx",             abs(b.com_x - b.cx)<1e-9)
-check("com_y = cy",             abs(b.com_y - b.cy)<1e-9)
+H_ref = BLOCK_H_RATIO * U      # 1.4 * 0.6 = 0.84
+check("width = 1.6*H",       abs(b.width  - BLOCK_W_RATIO*H_ref)<1e-9,
+      f"got {b.width:.6f} expected {BLOCK_W_RATIO*H_ref:.6f}")
+check("height = H",          abs(b.height - H_ref)<1e-9,
+      f"got {b.height:.6f}")
+check("rx = 0.05*H",         abs(b.rx     - BLOCK_RX_RATIO*H_ref)<1e-9,
+      f"got {b.rx:.6f}")
+check("lw = 1.5pt",          abs(b.lw     - 1.5)<1e-9, f"got {b.lw}")
+check("fill = #DBEAFE",      b.fill   == "#DBEAFE")
+check("border = #000000",    b.border == "#000000")
+check("cx stored",           abs(b.cx - 3.0)<1e-9)
+check("cy stored",           abs(b.cy - 2.5)<1e-9)
+check("com_x = cx",          abs(b.com_x - b.cx)<1e-9)
+check("com_y = cy",          abs(b.com_y - b.cy)<1e-9)
 
 section("3 . Contact points (flat block)")
 b = AtlasBlock(0.0, 0.0, U, rotation_deg=0.0)
-check("top_cy = +H/2",          abs(b.top_cy    -  b.height/2)<1e-9, f"got {b.top_cy:.4f}")
-check("bottom_cy = -H/2",       abs(b.bottom_cy - (-b.height/2))<1e-9, f"got {b.bottom_cy:.4f}")
-check("left_cx = -W/2",         abs(b.left_cx   - (-b.width/2))<1e-9,  f"got {b.left_cx:.4f}")
-check("right_cx = +W/2",        abs(b.right_cx  -  b.width/2)<1e-9,  f"got {b.right_cx:.4f}")
-check("top_cx = 0",             abs(b.top_cx)<1e-9)
-check("bottom_cx = 0",          abs(b.bottom_cx)<1e-9)
-check("left_cy = 0",            abs(b.left_cy)<1e-9)
-check("right_cy = 0",           abs(b.right_cy)<1e-9)
-check("4 corners stored",       len(b.corners)==4)
+check("top_cy = +H/2",       abs(b.top_cy    -  b.height/2)<1e-9, f"got {b.top_cy:.4f}")
+check("bottom_cy = -H/2",    abs(b.bottom_cy - (-b.height/2))<1e-9, f"got {b.bottom_cy:.4f}")
+check("left_cx = -W/2",      abs(b.left_cx   - (-b.width/2))<1e-9, f"got {b.left_cx:.4f}")
+check("right_cx = +W/2",     abs(b.right_cx  -  b.width/2)<1e-9, f"got {b.right_cx:.4f}")
+check("top_cx = 0",          abs(b.top_cx)<1e-9)
+check("bottom_cx = 0",       abs(b.bottom_cx)<1e-9)
+check("left_cy = 0",         abs(b.left_cy)<1e-9)
+check("right_cy = 0",        abs(b.right_cy)<1e-9)
+check("4 corners stored",    len(b.corners)==4)
 
 section("4 . Contact points (rotated 90 deg)")
 b90 = AtlasBlock(0.0, 0.0, U, rotation_deg=90.0)
-# At 90deg: top point is to the left (-H/2 in x), bottom is to the right
 check("top_cx at 90deg = -H/2", abs(b90.top_cx - (-b90.height/2))<1e-6,
       f"got {b90.top_cx:.4f}")
-check("bottom_cx at 90deg=+H/2",abs(b90.bottom_cx - b90.height/2)<1e-6,
+check("bottom_cx at 90deg=+H/2", abs(b90.bottom_cx - b90.height/2)<1e-6,
       f"got {b90.bottom_cx:.4f}")
-check("right_cy at 90deg=+W/2", abs(b90.right_cy - b90.width/2)<1e-6,
+check("right_cy at 90deg=+W/2",  abs(b90.right_cy - b90.width/2)<1e-6,
       f"got {b90.right_cy:.4f}")
 
 section("5 . All standard rotations render without error")
@@ -110,6 +112,45 @@ try:
 except Exception as e:
     check("no-label block renders", False, str(e))
 plt.close(fig)
+
+section("9 . Stack height scaling")
+b1 = AtlasBlock(3.0, 3.0, U, height_scale=1.00)
+b2 = AtlasBlock(3.0, 3.0, U, height_scale=0.75)
+b3 = AtlasBlock(3.0, 3.0, U, height_scale=0.60)
+H_base = BLOCK_H_RATIO * U
+check("1-stack height = H",
+      abs(b1.height - H_base) < 1e-9)
+check("2-stack height = 0.75*H",
+      abs(b2.height - H_base*0.75) < 1e-9)
+check("3-stack height = 0.60*H",
+      abs(b3.height - H_base*0.60) < 1e-9)
+
+section("10 . Stack contact points correct with height_scale")
+floor_y = 1.0
+H2 = BLOCK_H_RATIO * U * 0.75
+b_bot2 = AtlasBlock(3.0, floor_y+H2*0.5, U,
+                    width_scale=2.0, height_scale=0.75)
+b_top2 = AtlasBlock(3.0, floor_y+H2*1.5, U,
+                    width_scale=1.0, height_scale=0.75)
+check("2-stack: bot on floor",
+      abs(b_bot2.bottom_cy - floor_y) < 1e-9)
+check("2-stack: top on bot",
+      abs(b_top2.bottom_cy - b_bot2.top_cy) < 1e-9,
+      f"gap={b_top2.bottom_cy - b_bot2.top_cy:.6f}")
+
+H3 = BLOCK_H_RATIO * U * 0.60
+b_bot3 = AtlasBlock(3.0, floor_y+H3*0.5, U,
+                    width_scale=3.0, height_scale=0.60)
+b_mid3 = AtlasBlock(3.0, floor_y+H3*1.5, U,
+                    width_scale=2.0, height_scale=0.60)
+b_top3 = AtlasBlock(3.0, floor_y+H3*2.5, U,
+                    width_scale=1.0, height_scale=0.60)
+check("3-stack: bot on floor",
+      abs(b_bot3.bottom_cy - floor_y) < 1e-9)
+check("3-stack: mid on bot",
+      abs(b_mid3.bottom_cy - b_bot3.top_cy) < 1e-9)
+check("3-stack: top on mid",
+      abs(b_top3.bottom_cy - b_mid3.top_cy) < 1e-9)
 
 print(f"\n{'='*56}")
 print(f"  RESULTS: {PASS} passed   {FAIL} failed")
