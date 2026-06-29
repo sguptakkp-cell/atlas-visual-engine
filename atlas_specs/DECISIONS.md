@@ -19,6 +19,19 @@ _(populated as decisions are made)_
 ```
 
 ```
+2026-06-29  Session 3  : AtlasRope LOCKED — golden master committed
+  [FROZEN] ROPE_LW_OUTER_PT = 5.0   fixed pts
+  [FROZEN] ROPE_LW_MID_PT   = 3.0   fixed pts
+  [FROZEN] ROPE_LW_HI_PT    = 1.2   fixed pts
+  [FROZEN] ROPE_HI_ALPHA    = 0.60
+  [FROZEN] colors: #3D1F0A / #C87941 / #E8A84A
+  [FROZEN] cap_style = round
+  [FROZEN] rope.x2,y2 must equal block.top_cx, block.top_cy exactly
+  [FROZEN] T arrow overlap with rope is a zorder issue not a rope bug
+  [FROZEN] AtlasRope in atlas/visual/rope.py — DO NOT MODIFY
+```
+
+```
 2026-06-27  Session 2  : AtlasFloor LOCKED — golden master committed
   [FROZEN] SURFACE_LW_PT = 2.0
   [FROZEN] HATCH_DEPTH_RATIO = 0.55
