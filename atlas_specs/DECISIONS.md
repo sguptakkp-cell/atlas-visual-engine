@@ -65,6 +65,16 @@ _(populated as decisions are made)_
 ```
 
 ```
+2026-06-29  Session 3  : PhysicsScene LOCKED
+  [FROZEN] 8 scenarios: floor_block, hanging_block, incline_block,
+           stacked_2, stacked_3, incline_hanging, atwood, floor_applied
+  [FROZEN] API: PhysicsScene(scenario, U=0.6, theta=37).render(path)
+  [FROZEN] All visual decisions internal — caller provides scenario only
+  [FROZEN] Force toggles: show_N, show_mg, show_friction, show_T, show_applied
+  [FROZEN] AtlasArrow self-contained — force_name only
+```
+
+```
 2026-06-29  Session 3  : All 5 visual classes LOCKED with golden masters
   [FROZEN] AtlasArrow  — self-contained, force_name API
   [FROZEN] AtlasBlock  — H-relative, contact points

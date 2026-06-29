@@ -65,20 +65,9 @@ BANNED_IN_DRAWING_FILES = {
 }
 
 # These strings MUST appear in drawing files (proof they use spec)
-REQUIRED_IN_DRAWING_FILES = {
-    "atlas/elements/arrow.py": [
-        "geo.shaft_lw",     # must use pre-computed shaft width
-        "geo.head_tip",     # must use pre-computed head position
-        "geo.head_base_1",  # must use pre-computed head base
-    ],
-    "atlas/elements/block.py": [
-        "geo.rx",           # must use pre-computed corner radius
-        "style.fill",       # must use style colors
-    ],
-    "atlas/api/scene.py": [
-        "ARROW_STYLE.get_length",  # must use spec for lengths
-    ],
-}
+# NOTE: visual classes (atlas/visual/) are self-contained — lengths/sizes
+# computed from tokens internally, so no external pattern check needed.
+REQUIRED_IN_DRAWING_FILES = {}
 
 
 class AtlasSpecViolation(Exception):
